@@ -1,0 +1,25 @@
+h1 {
+    color: blue;
+}
+
+#choiceBtn {
+    width: 300px;
+    background-color: bisque;
+    padding: 5px;
+    /*border-width: 5px; */
+    border: solid 1px burlywood;
+    margin: 5px;
+ }
+
+
+ /* The user's cursor is positioned over the element */
+#choiceBtn:hover {
+    background-color: #ca9d22;
+    color: #000;
+    cursor: pointer;
+  }
+  
+  /* The user is actively pressing down on the element */
+  button:active {
+    box-shadow: 0 0 10px #000 inset;
+  }
