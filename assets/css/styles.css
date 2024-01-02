@@ -1,5 +1,11 @@
 h1 {
    color: rgb(202, 105, 48);
+   width: 75%;
+   margin-left: 30px;
+}
+
+button {
+   margin: 30px;
 }
 
 .choiceBtn {
@@ -14,6 +20,11 @@ h1 {
 li {
 list-style-type: none;
 
+}
+
+div {
+   color: red;
+   font-size: 125%;
 }
 
 /* The user's cursor is positioned over the element */
