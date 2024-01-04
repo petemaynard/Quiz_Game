@@ -16,11 +16,13 @@ const listOfQs = [{
 }];
 
 var qNum = 0;
-var secondsLeft = 10; // Time for the game
+var secondsLeft = 100; // Amount of time for the game
 var timeIsUp = false;  // Change to true when out of time
 var timeEl = document.querySelector(".time");
 var gamePoints = 0;
 var correctOrIncorrect = 0;
+let pickedA, pickedB, pickedC, pickedD 
+
 
 // Functions
 
@@ -32,7 +34,8 @@ function setTimeLeft() {
       if (secondsLeft < 0) {
          clearInterval(timerInterval)
          timeEl.textContent = "TIME IS UP!";
-         timeIsUp = true;
+         timeIsUp=true;
+         endGame();
       }
    }, 1000);
 }
@@ -50,32 +53,34 @@ function startGame() {
    // create global variable for timer
    // 
    setTimeLeft();
-   playRound(qNum);
-
+   playRound();
+   console.log("Put a breakpoint here.");
 };  //Here ends the startGame function
 
-//Surround this whole function with a timer???
 
-
-
-function playRound(qNum) {
+function playRound() {
 
    // Check that we haven't run out of questions (Move to where answers are checked)
-   if (qNum == listOfQs.length) {
+   if (qNum > listOfQs.length - 1) {
       console.log("No more questions.  Exit from playRound")
+      endGame();
       return;
    }
 
    console.log("I am starting playRound on round " + qNum);
-   updateQandA(qNum);
-   playerChooses(qNum);
-   console.log("I am back from playerChooses for round " + qNum);
+   updateQandA();
+   // pickedA.addEventListener("click", () => {rightOrWrong(0, qNum)});
+   // pickedB.addEventListener("click", () => {rightOrWrong(1, qNum)});
+   // pickedC.addEventListener("click", () => {rightOrWrong(2, qNum)});
+   // pickedD.addEventListener("click", () => {rightOrWrong(3, qNum)});
+   resetListeners();  // This is where the player picks choice
+
    return;
 }
 
-function updateQandA(qNum) {
+function updateQandA() {
+   // This function will replace the question and four choices
    console.log("Starting updateQandA for round " + qNum);
-   //Replace <h1> text with new question
    var changeQuestion = document.getElementById("question");
    changeQuestion.textContent = listOfQs[qNum].question;
 
@@ -90,85 +95,91 @@ function updateQandA(qNum) {
    return;
 }  // End of updateQandA
 
+function resetListeners() {
+   console.log("I am resetting the listeners for round " + qNum);
+   pickedA = document.getElementById("choiceA");
+   pickedB = document.getElementById("choiceB");
+   pickedC = document.getElementById("choiceC");
+   pickedD = document.getElementById("choiceD");
 
-function playerChooses(qNum) {
+   // Replace all elements with new so that the listener set up earlier will not still be listening for old data
+   //  https://stackoverflow.com/questions/9251837/how-to-remove-all-listeners-in-an-element
+   var newPickedA = pickedA.cloneNode(true);
+   pickedA.parentNode.replaceChild(newPickedA, pickedA);
+   var newPickedB = pickedB.cloneNode(true);
+   pickedB.parentNode.replaceChild(newPickedB, pickedB);
+   var newPickedC = pickedC.cloneNode(true);
+   pickedC.parentNode.replaceChild(newPickedC, pickedC);
+   var newPickedD = pickedD.cloneNode(true);
+   pickedD.parentNode.replaceChild(newPickedD, pickedD);
 
-   console.log("I am where the player chooses for round " + qNum);
-   let pickedA = document.getElementById("choiceA");
-   let pickedB = document.getElementById("choiceB");
-   let pickedC = document.getElementById("choiceC");
-   let pickedD = document.getElementById("choiceD");
+   // var newPickedA = document.getElementById("choiceA");
+   // pickedA.replaceWith(newPickedA);
+   // var newPickedB = document.getElementById("choiceB");
+   // pickedB.replaceWith(newPickedB);
+   // var newPickedC = document.getElementById("choiceC");
+   // pickedC.replaceWith(newPickedC);
+   // var newPickedD = document.getElementById("choiceD");
+   // pickedD.replaceWith(newPickedD);
 
-   pickedA.addEventListener("click", function () {
-      console.log("Checking A for round " + qNum);
-      if (listOfQs[qNum].answer == 0) {
-         choiceRightOrWrong(1);
-      }
-      else {
-         choiceRightOrWrong(0);
-      }
-   });
-   pickedB.addEventListener("click", function () {
-      console.log("Checking B for round " + qNum);
-      if (listOfQs[qNum].answer == 1) {
-         choiceRightOrWrong(1);
-      }
-      else {
-         choiceRightOrWrong(0);
-      }
-   });
-   pickedC.addEventListener("click", function () {
-      console.log("Checking C for round " + qNum);
-      if (listOfQs[qNum].answer == 2) {
-         choiceRightOrWrong(1);
-      }
-      else {
-         choiceRightOrWrong(0);
-      }
-   });
-   pickedD.addEventListener("click", function () {
-      console.log("Checking D for round " + qNum);
-      if (listOfQs[qNum].answer == 3) {
-         choiceRightOrWrong(1);
-      }
-      else {
-         choiceRightOrWrong(0);
-      }
-   });
 
-   console.log("I am waiting for an answer for round " + qNum);
+   newPickedA.addEventListener("click", () => {rightOrWrong(0, qNum)});
+   newPickedB.addEventListener("click", () => {rightOrWrong(1, qNum)});
+   newPickedC.addEventListener("click", () => {rightOrWrong(2, qNum)});
+   newPickedD.addEventListener("click", () => {rightOrWrong(3, qNum)});
+   console.log("I have set the listeners for round " + qNum);
+}
+
+function playerChooses() {
+   // pickedA.removeEventListener("click", () => {rightOrWrong(0, qNum-1)});
+   // pickedB.removeEventListener("click", () => {rightOrWrong(1, qNum-1)});
+   // pickedC.removeEventListener("click", () => {rightOrWrong(2, qNum-1)});
+   // pickedD.removeEventListener("click", () => {rightOrWrong(3, qNum-1)});
    return;
 }
 
+function rightOrWrong(choice, Num) {
+   console.log("rightOrWrong thinks this is qNum " + qNum);
+   if (listOfQs[Num].answer == choice) {
+      choiceRightOrWrong(1);
+   }
+   else {
+      choiceRightOrWrong(0);
+   }
+  console.log("I am waiting for an answer for round " + qNum);
+}
 
 function choiceRightOrWrong(num) {
    console.log("The choiceRorW is " + num);
    var showResult = document.createElement("div");
+   // If time is up, then answer doesn't count.  Go to end of game function
    if (num == 1) {
       correctOrIncorrect = "Correct";
+      gamePoints+=10;
    }
    else {
       correctOrIncorrect = "Incorrect";
+      secondsLeft -= 30;  // Penalty of three seconds for wrong answer
    }
    console.log("CorrectOrIncorrect is " + correctOrIncorrect);
    showResult = document.querySelector("div");
    showResult.textContent= correctOrIncorrect;
 
    qNum++;
-   if (qNum > listOfQs.length || secondsLeft <= 0) {
-      return;
-   }
-   else if (num = 1) {
-      gamePoints += 10;
-      playRound(qNum);
-   }
-   else {
-      secondsLeft -= 3;
-      playRound(qNum);
-   }
+   //resetListeners();
+   playRound();
 }
 
 
+
+function endGame() {
+   // Put what to do here when the time has run out 
+   // or if all questions are answered
+ 
+   // Store the score, get input of user's name
+    console.log("I am in the endGame function");
+ }
+ 
 
 
 // On click, start the game
