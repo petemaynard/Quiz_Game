@@ -1,30 +1,65 @@
 // List of questions, as an array of objects
 const listOfQs = [{
-   question: "What letter comes after a?",
-   choices: ["a", "b", "c", "d"],
+   question: "Which of these is not a constellation?",
+   choices: ["Orion", "Little Dipper", "Big Dipper", "Crater"],
+   answer: 2
+},
+{
+   question: "How long is a day on the moon??",
+   choices: ["About an Earth day", "About an Earth week", "About an Earth month", "About an Earth year"],
+   answer: 2
+},
+{
+   question: "The planet closest in size to Earth is which?",
+   choices: ["Venus", "Neptune", "Mars", "Mercury"],
+   answer: 0
+},
+{
+   question: "The word planet comes from the Greek word meaning what?",
+   choices: ["Lonesome", "Hero", "Solid", "Wanderer"],
+   answer: 3
+},
+{
+   question: "Pluto was visited for the first time by a spacecraft in 2015.  What was the name of the spacecraft?",
+   choices: ["Voyager", "New Horizons", "Exploratron 2000", "Bert"],
    answer: 1
 },
 {
-   question: "What letter comes before z?",
-   choices: ["w", "x", "y", "z"],
+   question: "Comet Halley is next scheduled to be visible without telescopes in what year?",
+   choices: ["2062", "4390", "2045", "3122"],
+   answer: 0
+},
+{
+   question: "The nearest major galaxy to Earth (not counting the one we are in) is which?",
+   choices: ["Hercules Galaxy", "Ford Galaxie", "Difflers Galaxy", "Andromeda Galaxy"],
+   answer: 3
+},
+{
+   question: "Who was not one of the astronauts on the fictional Mars-bound spaceship Capricorn One?",
+   choices: ["James Brolin", "Sam Waterston", "Telly Savalas", "O. J. Simpson"],
    answer: 2
 },
 {
-   question: "What is 1 + 2?",
-   choices: ["1", "2", "3", "4"],
-   answer: 2
-}];
+   question: "Was this the best homework turned in?",
+   choices: ["No", "YES! YES! YES!", "No", "No"],
+   answer: 1
+}
+];
 
 var qNum = 0;
-var secondsLeft = 100; // Amount of time for the game
+var secondsLeft = 120; // Amount of time for the game
 var timeIsUp = false;  // Change to true when out of time
 var timeEl = document.querySelector(".time");
+var playerInitials = "";
 var gamePoints = 0;
 var correctOrIncorrect = 0;
-let pickedA, pickedB, pickedC, pickedD 
+let pickedA, pickedB, pickedC, pickedD;  // For the listeners
+var playerInits;
+var storeTheScore = {
+   playerInitials: playerInitials,
+   gamePoints: gamePoints
+};
 
-
-// Functions
 
 function setTimeLeft() {
    var timerInterval = setInterval(function () {
@@ -34,7 +69,7 @@ function setTimeLeft() {
       if (secondsLeft < 0) {
          clearInterval(timerInterval)
          timeEl.textContent = "TIME IS UP!";
-         timeIsUp=true;
+         timeIsUp = true;
          endGame();
       }
    }, 1000);
@@ -48,35 +83,18 @@ function startGame() {
    removeButton.remove();
    console.log("I just removed the start button");
 
-   // TO DO: Set the countdown timer
-   // use setInterval, perhaps check every one second and take one away
-   // create global variable for timer
-   // 
    setTimeLeft();
    playRound();
-   console.log("Put a breakpoint here.");
 };  //Here ends the startGame function
 
 
 function playRound() {
 
-   // Check that we haven't run out of questions (Move to where answers are checked)
-   if (qNum > listOfQs.length - 1) {
-      console.log("No more questions.  Exit from playRound")
-      endGame();
-      return;
-   }
-
    console.log("I am starting playRound on round " + qNum);
    updateQandA();
-   // pickedA.addEventListener("click", () => {rightOrWrong(0, qNum)});
-   // pickedB.addEventListener("click", () => {rightOrWrong(1, qNum)});
-   // pickedC.addEventListener("click", () => {rightOrWrong(2, qNum)});
-   // pickedD.addEventListener("click", () => {rightOrWrong(3, qNum)});
    resetListeners();  // This is where the player picks choice
-
-   return;
 }
+
 
 function updateQandA() {
    // This function will replace the question and four choices
@@ -95,6 +113,7 @@ function updateQandA() {
    return;
 }  // End of updateQandA
 
+
 function resetListeners() {
    console.log("I am resetting the listeners for round " + qNum);
    pickedA = document.getElementById("choiceA");
@@ -112,82 +131,147 @@ function resetListeners() {
    pickedC.parentNode.replaceChild(newPickedC, pickedC);
    var newPickedD = pickedD.cloneNode(true);
    pickedD.parentNode.replaceChild(newPickedD, pickedD);
+   // Might be able to delete all of the replaceChild lines
 
-   // var newPickedA = document.getElementById("choiceA");
-   // pickedA.replaceWith(newPickedA);
-   // var newPickedB = document.getElementById("choiceB");
-   // pickedB.replaceWith(newPickedB);
-   // var newPickedC = document.getElementById("choiceC");
-   // pickedC.replaceWith(newPickedC);
-   // var newPickedD = document.getElementById("choiceD");
-   // pickedD.replaceWith(newPickedD);
-
-
-   newPickedA.addEventListener("click", () => {rightOrWrong(0, qNum)});
-   newPickedB.addEventListener("click", () => {rightOrWrong(1, qNum)});
-   newPickedC.addEventListener("click", () => {rightOrWrong(2, qNum)});
-   newPickedD.addEventListener("click", () => {rightOrWrong(3, qNum)});
+   newPickedA.addEventListener("click", () => { rightOrWrong(0, qNum) });
+   newPickedB.addEventListener("click", () => { rightOrWrong(1, qNum) });
+   newPickedC.addEventListener("click", () => { rightOrWrong(2, qNum) });
+   newPickedD.addEventListener("click", () => { rightOrWrong(3, qNum) });
    console.log("I have set the listeners for round " + qNum);
 }
 
-function playerChooses() {
-   // pickedA.removeEventListener("click", () => {rightOrWrong(0, qNum-1)});
-   // pickedB.removeEventListener("click", () => {rightOrWrong(1, qNum-1)});
-   // pickedC.removeEventListener("click", () => {rightOrWrong(2, qNum-1)});
-   // pickedD.removeEventListener("click", () => {rightOrWrong(3, qNum-1)});
-   return;
-}
-
 function rightOrWrong(choice, Num) {
-   console.log("rightOrWrong thinks this is qNum " + qNum);
+// The listeners call this function to handle correct and incorrect answers.
+// Num is the same as qNum.  It might be possible to remove that argument   
    if (listOfQs[Num].answer == choice) {
       choiceRightOrWrong(1);
    }
    else {
       choiceRightOrWrong(0);
    }
-  console.log("I am waiting for an answer for round " + qNum);
+   console.log("I am waiting for an answer for round " + qNum);
 }
 
+// Actions to take if the choice was correct or incorrect
 function choiceRightOrWrong(num) {
-   console.log("The choiceRorW is " + num);
    var showResult = document.createElement("div");
    // If time is up, then answer doesn't count.  Go to end of game function
-   if (num == 1) {
-      correctOrIncorrect = "Correct";
-      gamePoints+=10;
-   }
-   else {
-      correctOrIncorrect = "Incorrect";
-      secondsLeft -= 30;  // Penalty of three seconds for wrong answer
-   }
-   console.log("CorrectOrIncorrect is " + correctOrIncorrect);
-   showResult = document.querySelector("div");
-   showResult.textContent= correctOrIncorrect;
+   if (secondsLeft > 0) {  // Player answered in time
+      if (num == 1) {
+         correctOrIncorrect = "Correct";
+         if (qNum == 8) {
+            gamePoints += 100000000;
+         } else {
+            gamePoints += 10;
+         }
+      }
+      else {
+         correctOrIncorrect = "Incorrect";
+         secondsLeft -= 3;  // Penalty of three seconds for wrong answer
+      }
 
-   qNum++;
-   //resetListeners();
-   playRound();
+      showResult = document.querySelector("div");
+      showResult.textContent = correctOrIncorrect;
+
+      qNum++;
+      if (qNum > listOfQs.length - 1) {
+         console.log("No more questions.  Go to end of game");
+         secondsLeft = 0;
+      }
+      else {
+         console.log("Starting another round");
+         playRound();
+      }
+   }
+   else {  // No time left to play another round
+      showResult = document.querySelector("div");
+      showResult.textContent = "Time is up. This question not scored.";
+      endGame();
+   }
+}
+
+function endGame() {
+
+   // Make the h1 tag words say to enter your initials
+   var changeQuestion = document.getElementById("question");
+   changeQuestion.textContent = "Game is over.  Enter your initials.";
+   // Clear the <ul>
+   let e = document.querySelector("ol");
+   let child = e.lastElementChild;
+   while (child) {
+      e.removeChild(child);
+      child = e.lastElementChild;
+   }
+   showResult = document.querySelector("div");
+   showResult.textContent = "";
+
+   enterPlayerName();
+}
+
+function enterPlayerName() {
+   // Input: player initials, limit to three chars
+   var myForm = document.createElement("form");    // Create a new form element
+   myForm.setAttribute("id", "loginform");         // Set this ID for use with listener
+   var withinDiv = document.querySelector("div");  // Find an existing element, the only div
+   withinDiv.appendChild(myForm);                  // Insert the form tag
+   //Repeat for the input tag
+   var myInput = document.createElement("input");
+   myInput.setAttribute("type", "text");
+   myInput.setAttribute("id", "name");             // Use this to grab the name after listener
+   myInput.setAttribute("minlength", "3");
+   myInput.setAttribute("maxlength", "3");
+   var withinForm = document.querySelector("form");
+   withinForm.appendChild(myInput);
+   // Repeat for the Submit button
+   var mySubmitBtn = document.createElement("button");
+   mySubmitBtn.setAttribute("type", "submit");
+   mySubmitBtn.textContent = "Submit";
+   withinForm.appendChild(mySubmitBtn);
+
+   // Set a listener for the Submit Button
+   let loginForm = document.getElementById("loginform");
+   loginForm.addEventListener("submit", (event) => {
+      event.preventDefault();
+
+      playerInits = document.getElementById("name");
+      var playerInitsUpper = playerInits.value.toUpperCase();
+
+      submitToStorage(playerInitsUpper);
+   });
+
+}
+
+function submitToStorage(playerUC) {
+   console.log("I am in submitToStorage");
+   storeTheScore.playerInitials = playerUC;
+   storeTheScore.gamePoints = gamePoints;
+   localStorage.setItem("storeTheScore", JSON.stringify(storeTheScore));
+
+   showHighScores();
 }
 
 
 
-function endGame() {
-   // Put what to do here when the time has run out 
-   // or if all questions are answered
- 
-   // Store the score, get input of user's name
-    console.log("I am in the endGame function");
- }
- 
+function showHighScores() {
+
+   // Remove the existing <form>
+   var byebyeForm = document.getElementById("loginform");
+   byebyeForm.remove();
+
+   // Get the initials and scores
+   var getInitialFromStore = JSON.parse(localStorage.getItem("storeTheScore"));
+
+   //Now add the lines with score
+
+   var showScores = document.createElement("p");    // Create a new form element
+   showScores.setAttribute("id", "xxx");            // Set this ID for use with listener
+   showScores.textContent = "Player " + getInitialFromStore.playerInitials + " scored " + getInitialFromStore.gamePoints + " points.";
+   var withinDiv = document.querySelector("div");   // Find an existing element, the only div
+   withinDiv.appendChild(showScores);
+}
 
 
 // On click, start the game
-// TO DO: Hide the four <li> items
 var gameStart = document.getElementById("startBtn");
 gameStart.addEventListener("click", startGame);
 
-
-
-// Game is over.  Time to save the score.
-// User "input" to get player initials
