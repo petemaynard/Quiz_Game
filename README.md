@@ -27,7 +27,8 @@ Contains\
 
 ## Credits
 
-Created entirely by Pete Maynard.
+Created by Pete Maynard
+with some assistance from tutor Dru Sanchez
 
 
 
